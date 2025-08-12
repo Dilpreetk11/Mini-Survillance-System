@@ -1,3 +1,5 @@
-streamlit==1.34.0
-ultralytics==8.2.22
-opencv-python-headless==4.9.0.80
+streamlit==1.48.0
+ultralytics==8.3.177  # Adjust the version as needed
+deepface==0.0.95      # Adjust the version as needed
+opencv-python-headless==4.12.0.88  # Adjust the version as needed
+numpy==1.23.5         # Ensure compatibility with other packages
