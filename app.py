@@ -114,3 +114,6 @@ def main():
         finally:
             if 'cap' in locals() and cap.isOpened():
                 cap.release()
+
+if __name__ == '__main__':
+    main()
