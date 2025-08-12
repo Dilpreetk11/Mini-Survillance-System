@@ -1,0 +1,4 @@
+streamlit
+ultralytics
+deepface
+opencv-python-headless
