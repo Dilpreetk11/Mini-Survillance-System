@@ -1,10 +1,7 @@
 import streamlit as st
 from ultralytics import YOLO
 import cv2
-from deepface import DeepFace
-import numpy as np
 import tempfile
-import time
 
 # Function to load YOLOv8 model for weapon detection
 @st.cache_resource
@@ -15,41 +12,9 @@ def load_yolo_model():
 
 def detect_weapons(frame, model):
     """Detects weapons in a frame using YOLOv8."""
-    # Run YOLOv8 inference on the frame
     results = model(frame)
     annotated_frame = results[0].plot()
     return annotated_frame
-
-def detect_faces(frame):
-    """Detects and analyzes faces in a frame using DeepFace."""
-    try:
-        # Use DeepFace to analyze faces for attributes like emotion and age
-        # Actions can be 'emotion', 'age', 'gender', 'race'
-        detections = DeepFace.analyze(
-            frame, 
-            actions=['emotion', 'age', 'gender'], 
-            enforce_detection=False
-        )
-        
-        # Draw bounding boxes and text on the frame
-        for detection in detections:
-            box = detection['region']
-            x, y, w, h = box['x'], box['y'], box['w'], box['h']
-            
-            # Draw rectangle
-            cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
-            
-            # Add text
-            emotion = detection['dominant_emotion']
-            age = detection['age']
-            gender = detection['gender']
-            text = f"Emotion: {emotion}, Age: {age}, Gender: {gender}"
-            cv2.putText(frame, text, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
-    except Exception as e:
-        st.error(f"DeepFace analysis failed: {e}")
-        pass
-    
-    return frame
 
 def main():
     st.title("Mini Surveillance System")
@@ -77,9 +42,8 @@ def main():
                 if not ret:
                     break
                 
-                # Perform detections
-                weapon_frame = detect_weapons(frame, yolo_model)
-                final_frame = detect_faces(weapon_frame)
+                # Perform weapon detection
+                final_frame = detect_weapons(frame, yolo_model)
                 
                 stframe.image(final_frame, channels="BGR")
             
@@ -104,8 +68,7 @@ def main():
                     st.error("Error: Failed to capture frame.")
                     break
                 
-                weapon_frame = detect_weapons(frame, yolo_model)
-                final_frame = detect_faces(weapon_frame)
+                final_frame = detect_weapons(frame, yolo_model)
                 
                 stframe.image(final_frame, channels="BGR")
 
